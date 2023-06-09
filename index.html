@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendario</title>
+  <style>
+    h2 {
+	 	text-align: center;
+		font-family: Arial, sans-serif;
+		font-size: 50px;
+		margin: 1px;
+	 }
+	 table {
+      width: 100%;
+    }
+    
+    th, td {
+      text-align: center;
+		font-family: Arial, sans-serif;
+		font-size: 20px;
+      padding: 30px;
+    }
+    
+    th {
+      background-color: #66b3ff;
+    }
+    
+    td {
+      border: 1px solid #ddd;
+    }
+    
+    td:hover {
+      background-color: #30D5C8;
+    }
+    
+    .today {
+      background-color: #00b386;
+    }
+  </style>
+</head>
+<body>
+  <h2>Calendario</h2>
+  
+  <div id="calendar"></div>
+
+  <script>
+    // Obtén la fecha actual
+    var currentDate = new Date();
+
+    // Variables para almacenar el año y el mes actual
+    var currentYear = currentDate.getFullYear();
+    var currentMonth = currentDate.getMonth();
+
+    // Función para generar el calendario
+    function generateCalendar(year, month) {
+      // Obtén el elemento del calendario
+      var calendar = document.getElementById("calendar");
+
+      // Crear una fecha para el primer día del mes
+      var firstDay = new Date(year, month, 1);
+
+      // Obtén el número de días en el mes actual
+      var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Crea una tabla para mostrar el calendario
+      var table = document.createElement("table");
+
+      // Crea la fila de encabezado con los nombres de los días de la semana
+      var headerRow = document.createElement("tr");
+      var daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      for (var i = 0; i < daysOfWeek.length; i++) {
+        var th = document.createElement("th");
+        th.textContent = daysOfWeek[i];
+        headerRow.appendChild(th);
+      }
+      table.appendChild(headerRow);
+
+      // Calcula el número de celdas necesarias para el mes actual
+      var totalCells = Math.ceil((firstDay.getDay() + daysInMonth) / 7) * 7;
+
+      // Variables para controlar los días del mes anterior y siguiente
+      var prevMonth = new Date(year, month, 0).getDate();
+      var nextMonth = 1;
+
+      // Variables para controlar las celdas actuales
+      var currentCell = 1;
+      var currentDay = 1;
+
+      // Crea las celdas del calendario
+      for (var row = 0; row < Math.ceil(totalCells / 7); row++) {
+        var tr = document.createElement("tr");
+
+        for (var col = 0; col < 7; col++) {
+          var td = document.createElement("td");
+
+          // Establece las clases para resaltar el día actual
+          if (currentDay === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
+            td.classList.add("today");
+          }
+
+          // Agrega los días del mes anterior
+          if (currentCell <= firstDay.getDay()) {
+            td.textContent = prevMonth - firstDay.getDay() + currentCell;
+            td.classList.add("prev-month");
+          }
+          // Agrega los días del mes actual
+          else if (currentCell <= (firstDay.getDay() + daysInMonth)) {
+            td.textContent = currentDay;
+            currentDay++;
+          }
+          // Agrega los días del mes siguiente
+          else {
+            td.textContent = nextMonth;
+            td.classList.add("next-month");
+            nextMonth++;
+          }
+
+          tr.appendChild(td);
+          currentCell++;
+        }
+
+        table.appendChild(tr);
+      }
+
+      // Limpia el contenido anterior del calendario
+      calendar.innerHTML = "";
+
+      // Agrega la tabla del calendario al elemento del calendario
+      calendar.appendChild(table);
+    }
+
+    // Genera el calendario para el año y mes actuales
+    generateCalendar(currentYear, currentMonth);
+  </script>
+</body>
+</html>
